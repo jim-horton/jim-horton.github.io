@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Know Your Home — The Alaska Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Spectral', Georgia, serif;
+      background-color: #f5f2ed;
+      color: #2c2c2c;
+    }
+
+    /* Header */
+    header {
+      width: 100%;
+      height: 480px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    header .overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 40px 60px;
+      background: linear-gradient(transparent, rgba(20, 40, 30, 0.75));
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    header p.tagline {
+      color: #d0e8e0;
+      font-style: italic;
+      font-size: 1.1rem;
+      margin-top: 6px;
+    }
+
+    /* Nav */
+    nav {
+      background-color: #2d4a3e;
+      padding: 0 60px;
+    }
+
+    nav a {
+      display: inline-block;
+      color: #c8ddd6;
+      text-decoration: none;
+      padding: 14px 20px 14px 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    nav a:hover {
+      color: #ffffff;
+    }
+
+    /* Page layout */
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 50px 40px;
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 60px;
+      align-items: start;
+    }
+
+    /* Post header */
+    .post-meta {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.8rem;
+      color: #7a8c7e;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    main h2 {
+      font-size: 2.2rem;
+      color: #1a3028;
+      margin-bottom: 32px;
+      line-height: 1.25;
+    }
+
+    /* Section dividers */
+    .section-mark {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      color: #3d7a5a;
+      text-align: center;
+      margin: 44px 0 32px;
+      text-transform: uppercase;
+    }
+
+    .section-mark:first-of-type {
+      margin-top: 0;
+    }
+
+    main p {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: #3a3a3a;
+      margin-bottom: 20px;
+    }
+
+    sup {
+      color: #3d7a5a;
+      font-size: 0.75rem;
+      cursor: default;
+    }
+
+    blockquote {
+      border-left: 4px solid #3d7a5a;
+      margin: 28px 0 28px 20px;
+      padding: 8px 20px;
+      color: #2d4a3e;
+      font-style: italic;
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+
+    /* Chart embeds */
+    .chart-embed {
+      margin: 32px 0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .chart-embed iframe {
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    .chart-embed.square {
+      max-width: 520px;
+    }
+
+    .chart-embed.landscape {
+      max-width: 100%;
+    }
+
+    /* Sign-off / back link */
+    .back-link {
+      display: inline-block;
+      margin-top: 48px;
+      color: #3d7a5a;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.85rem;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #3d7a5a;
+      padding-bottom: 2px;
+    }
+
+    .back-link:hover {
+      color: #1a3028;
+      border-color: #1a3028;
+    }
+
+    /* Sidebar */
+    aside {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.82rem;
+      color: #5a6b5e;
+      line-height: 1.6;
+    }
+
+    aside .footnote {
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid #d4cfc8;
+    }
+
+    aside .footnote:last-child {
+      border-bottom: none;
+    }
+
+    aside .footnote-number {
+      font-weight: bold;
+      color: #3d7a5a;
+      margin-right: 4px;
+    }
+
+    aside h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #2d4a3e;
+      margin-bottom: 14px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #2d4a3e;
+      color: #8aada0;
+      text-align: center;
+      padding: 30px 40px;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.82rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      .page-wrap {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 32px 20px;
+      }
+
+      header {
+        height: 300px;
+      }
+
+      header .overlay {
+        padding: 24px 20px;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      nav {
+        padding: 0 20px;
+      }
+
+      main h2 {
+        font-size: 1.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="Website%20Hero.JPG" alt="Glacier and ship in Alaska waters">
+    <div class="overlay">
+      <h1>The Alaska Blog</h1>
+      <p class="tagline">Dispatches from the last frontier</p>
+    </div>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="#">About</a>
+    <a href="#">Archives</a>
+  </nav>
+
+  <div class="page-wrap">
+    <main>
+      <p class="post-meta">May 22, 2026</p>
+      <h2>Know Your Home</h2>
+
+      <p class="section-mark">I</p>
+
+      <p>
+        In Ella Higginson's <em>Alaska: The Great Country</em><sup>1</sup> there is this charming
+        moment, as the steamer approaches Grenville Channel on the trip out from Seattle, where the
+        author asks her fellow passengers about Alaska. One of them, a laborer, offers her this bright
+        little gem in response:
+      </p>
+
+      <blockquote>
+        "Maybe you see a white mountain, or a green valley, or a big river, or a blue strait, or a
+        waterfall—and like a flash your heart opens, and shuts in an ache for Alaska that stays."
+      </blockquote>
+
+      <p>
+        I think about that often now that I live here again. I left the state when I was nine years
+        old in the passenger seat of a crumbling U-Haul, down the Al-Can highway to the San Francisco
+        bay. I spent the following decades in various stages of mismatch. There's a saying I heard a
+        few years ago that captures it well: <em>"Alaska: it doesn't change you so much as it makes
+        you unfit to live anywhere else."</em> As best as I can tell that's correct. Stay here long
+        enough and you get a bit of the wild in you — too much for other states. And it does haunt you.
+        The aurora gets in you like a ghost and it lingers.
+      </p>
+
+      <p>
+        I don't know if that's just an Alaska thing or if everybody carries a bit of home with them
+        when they go, but in either case Alaska is one hell of a home to carry. So eventually I found
+        myself back in my hometown of Anchorage, against all professional sense.
+      </p>
+
+      <p>
+        And now I'm writing about it. This has been a long-dreamed-of project for me.
+      </p>
+
+      <p class="section-mark">II</p>
+
+      <p>
+        I'd like to explain a little bit about why I'm back here, and why I'm writing. A lot of it
+        is just the impulse to find a place, to give to it, to lay down roots. Professionally, though,
+        coming here makes little sense. I'm a numbers guy, a data guy, and in my field when you get a
+        degree and some experience under your belt you're supposed to root around and find a spot
+        somewhere in the tech world that will take you, or maybe academia, and you move there.
+      </p>
+
+      <p>
+        Instead of doing that, I just moved straight here.
+      </p>
+
+      <p>
+        There was a moment back in 2019 that prompted my decision. It's a bit weird — my family had
+        roped me into buying tickets for the Nenana Ice Classic.<sup>2</sup> The Ice Classic is good
+        old gambling, Alaska style — every winter the residents of Nenana, south of Fairbanks, drag
+        a massive metal tripod out onto the frozen Tanana River. Then they let it sit there and, come
+        spring, the whole state bets on when it's going to fall through the ice.
+      </p>
+
+      <p>
+        The folks running the Ice Classic have recorded the precise fall time every year since the
+        classic started in 1917, close to 110 years. They publish it every year in a brochure. You
+        can see the fall dates for each year nicely laid out in their calendar. At the prompting of
+        my family I wound up taking that brochure and turning it into a dataset, graphing the fall
+        dates. The result is below:
+      </p>
+
+      <div class="chart-embed square">
+        <iframe src="nenana-chart-2.html" height="540" scrolling="no" title="Nenana Ice Classic Breakup Dates"></iframe>
+      </div>
+
+      <p>
+        I find this chart enchanting. Don't worry; I'm a numbers guy and I know that's a "me" thing —
+        I'm not expecting you to be enthralled by a graph. But let me explain what I see in it.
+      </p>
+
+      <p>
+        It's pretty clear from the graph that something changed in 1970. The tripod began to fall
+        through the ice earlier, and earlier, and earlier, at least when you look at the average trend.
+        The brochure, it turns out, is a pretty classic example of a "found dataset" showing that the
+        arctic has been warming. The folks who run the Nenana Ice Classic had no agenda in collecting
+        their data besides figuring out who won the betting pool, and yet they accidentally documented
+        a sudden shift in the climate of the north.
+      </p>
+
+      <p>
+        The Nenana Ice Classic records aren't the only example of a found dataset capturing global
+        warming. The most famous is the record of the Kyoto Cherry Blossom festival, in Japan. The
+        festival is timed so that it always happens when the cherry blossom flowers are in bloom.
+        People have recorded the festival date every year since 812 AD,<sup>3</sup> which gives us a
+        near perfect measure of when the blossoms in Kyoto bloomed each year.
+      </p>
+
+      <p>
+        It is an enormous timeline; I've graphed it here along with a trend line, and I've placed a
+        dotted line at the year 1970 — the same year the Nenana trend shifted downward. It looks like
+        the blossom time began shifting in the early 1900s, but you can see how the trend increased
+        after 1970.
+      </p>
+
+      <div class="chart-embed landscape">
+        <iframe src="kyoto-cherry-chart.html" height="420" scrolling="no" title="Kyoto Cherry Blossom Dates"></iframe>
+      </div>
+
+      <p>
+        Even more charming — in 1912 Japan gifted cherry blossom trees to Washington D.C. as a sign
+        of friendship between the two nations.<sup>4</sup> Clearly that didn't go quite as hoped, but
+        the U.S.A. has reciprocated by holding its own festival each year, and scientists have recorded
+        the bloom dates every year since 1920. Once again, I marked the year 1970 with a dashed line.
+        You can see how it captures the same trend.
+      </p>
+
+      <div class="chart-embed square">
+        <iframe src="dc-cherry-chart.html" height="540" scrolling="no" title="Washington D.C. Cherry Blossom Peak Dates"></iframe>
+      </div>
+
+      <p class="section-mark">III</p>
+
+      <p>
+        There is no scientific or moral lesson here. I'm not trying to make a point about global
+        warming. My point is different. These numbers have been around for a long time, documenting
+        a surprising trend that connects Alaska to far-flung locations like Kyoto, Japan, and
+        Washington D.C. The details are there, and always have been. You just have to look at
+        the brochure.
+      </p>
+
+      <p>
+        The world is full of hidden details like that, which only pop up when you look at the
+        brochure. It's not just numbers and patterns, either. There are stories, connections, and
+        surprises; they're all there if you're willing to look at the brochure.
+      </p>
+
+      <p>
+        Another example: In Alaska we have an island, a river, a lake, a protected wilderness, and
+        a street (in Anchorage) that all share the name Baranof. Look a bit deeper into that and
+        you find a wild story hiding behind that name: A vaguely Putinesque Russian merchant, strapped
+        for cash, sails to a land almost completely unknown to the west and sets himself up as the
+        micro-dictator of a company town to extract furs for his employer. Within days of his arrival
+        his headquarters is destroyed by a tidal wave and he has to oversee the building of its
+        replacement. He feuds with Russian monks. He founds a doomed experimental city. And then,
+        after decades of service, he's fired. His replacement suggests that he returns to Siberia
+        and so, with trepidation, he boards a ship to return to the home he left behind — and he
+        dies from illness on the way there.
+      </p>
+
+      <p>
+        My point, I suppose, is this: know your home. There are stories there, wild stories, and
+        knowing them connects you more securely to the place and the people around you. This slow
+        process of learning history, and numbers, and institutions, and <em>people,</em> is the thing
+        that transforms you from a disconnected dweller into a member of a community. The modern world
+        works against this kind of citizenship. For most people, life happens on the internet, or at
+        least the life they pay attention to. There's still an entire world right outside the door, waiting.
+      </p>
+
+      <p>
+        A few years back I decided that I wanted to know my home. So I thought about the many places
+        I had lived and, on review, I was surprised to realize that Alaska is the place I truly wanted
+        to know. When I was young I saw the white mountains, the green valleys, the big rivers, the
+        blue straits, the waterfalls, and like a flash my heart opened, and shut in an ache for Alaska.
+        For home. It stayed.
+      </p>
+
+      <p>
+        This blog, then, is my record. An earnest attempt to know my home, and to share it
+        with you. — JH
+      </p>
+
+      <a href="index.html" class="back-link">← Back to home</a>
+    </main>
+
+    <aside>
+      <h3>Notes</h3>
+      <div class="footnote">
+        <span class="footnote-number">1.</span>
+        Ella Higginson (1861–1940) was a poet and novelist from Bellingham, Washington.
+        <em>Alaska: The Great Country</em> (1908) remains one of the most vivid early accounts of
+        the territory written for a general audience.
+      </div>
+      <div class="footnote">
+        <span class="footnote-number">2.</span>
+        The Nenana Ice Classic has run every year since 1917. Tickets cost $2.50, and the jackpot
+        is split among all winners who named the correct minute. The 2019 breakup — day 104, April
+        14th — was the earliest on record.
+      </div>
+      <div class="footnote">
+        <span class="footnote-number">3.</span>
+        The historical Kyoto blossom records were compiled by Yasuyuki Aono of Osaka Prefecture
+        University, who reconstructed dates from imperial court diaries, temple records, and
+        classical literature spanning more than 1,200 years.
+      </div>
+      <div class="footnote">
+        <span class="footnote-number">4.</span>
+        The 1912 gift of 3,020 trees was arranged by First Lady Helen Taft and Viscountess Chinda,
+        wife of the Japanese ambassador. A first shipment of 2,000 trees in 1910 had to be burned
+        on arrival due to disease. The "didn't go quite as hoped" is a quiet nod to 1941.
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    &copy; 2026 The Alaska Blog
+  </footer>
+
+</body>
+</html>

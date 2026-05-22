@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Washington D.C. Cherry Blossom Peak Dates</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #f0ece4;
+      font-family: Georgia, 'Times New Roman', serif;
+      display: flex;
+      justify-content: center;
+      padding: 20px 16px 32px;
+    }
+    .chart-wrap {
+      width: 100%;
+      max-width: 800px;
+    }
+    .chart-title {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #1a3028;
+      text-align: center;
+      line-height: 1.4;
+      margin-bottom: 3px;
+    }
+    .chart-subtitle {
+      font-size: 0.7rem;
+      color: #6b7c6e;
+      text-align: center;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+    svg text { font-family: Georgia, 'Times New Roman', serif; }
+  </style>
+</head>
+<body>
+  <div class="chart-wrap">
+    <p class="chart-title">Washington D.C. Cherry Blossom Peak Dates, 1921–2022</p>
+    <p class="chart-subtitle">Yoshino peak bloom date, Tidal Basin, Washington D.C.</p>
+    <svg id="chart"></svg>
+  </div>
+
+  <script>
+    const data = [
+      {year:1921,doy:79},{year:1922,doy:97},{year:1923,doy:99},{year:1924,doy:104},
+      {year:1925,doy:86},{year:1926,doy:101},{year:1927,doy:79},{year:1928,doy:99},
+      {year:1929,doy:90},{year:1930,doy:91},{year:1931,doy:101},{year:1932,doy:106},
+      {year:1933,doy:99},{year:1934,doy:105},{year:1935,doy:91},{year:1936,doy:98},
+      {year:1937,doy:104},{year:1938,doy:84},{year:1939,doy:89},{year:1940,doy:104},
+      {year:1941,doy:102},{year:1942,doy:95},{year:1943,doy:94},{year:1944,doy:100},
+      {year:1945,doy:79},{year:1946,doy:82},{year:1947,doy:102},{year:1948,doy:88},
+      {year:1949,doy:88},{year:1950,doy:99},{year:1951,doy:96},{year:1952,doy:100},
+      {year:1953,doy:86},{year:1954,doy:96},{year:1955,doy:92},{year:1956,doy:97},
+      {year:1957,doy:98},{year:1958,doy:108},{year:1959,doy:96},{year:1960,doy:105},
+      {year:1961,doy:92},{year:1962,doy:97},{year:1963,doy:93},{year:1964,doy:102},
+      {year:1965,doy:105},{year:1966,doy:95},{year:1967,doy:96},{year:1968,doy:90},
+      {year:1969,doy:99},{year:1970,doy:106},{year:1971,doy:98},{year:1972,doy:102},
+      {year:1973,doy:101},{year:1974,doy:93},{year:1975,doy:93},{year:1976,doy:83},
+      {year:1977,doy:85},{year:1978,doy:102},{year:1979,doy:92},{year:1980,doy:97},
+      {year:1981,doy:93},{year:1982,doy:97},{year:1983,doy:97},{year:1984,doy:94},
+      {year:1985,doy:97},{year:1986,doy:92},{year:1987,doy:87},{year:1988,doy:91},
+      {year:1989,doy:88},{year:1990,doy:74},{year:1991,doy:88},{year:1992,doy:98},
+      {year:1993,doy:101},{year:1994,doy:95},{year:1995,doy:92},{year:1996,doy:95},
+      {year:1997,doy:85},{year:1998,doy:86},{year:1999,doy:95},{year:2000,doy:77},
+      {year:2001,doy:96},{year:2002,doy:92},{year:2003,doy:92},{year:2004,doy:91},
+      {year:2005,doy:99},{year:2006,doy:89},{year:2007,doy:91},{year:2008,doy:86},
+      {year:2009,doy:91},{year:2010,doy:90},{year:2011,doy:88},{year:2012,doy:80},
+      {year:2013,doy:99},{year:2014,doy:100},{year:2015,doy:100},{year:2016,doy:85},
+      {year:2017,doy:84},{year:2018,doy:95},{year:2019,doy:91},{year:2020,doy:80},
+      {year:2021,doy:87},{year:2022,doy:80}
+    ];
+
+    function loess(data, bandwidth) {
+      const n = data.length;
+      const k = Math.floor(bandwidth * n);
+      return data.map(({year: x0}) => {
+        const dists = data.map(d => Math.abs(d.year - x0));
+        const sorted = [...dists].sort((a, b) => a - b);
+        const h = sorted[k];
+        const weights = dists.map(d => {
+          const u = d / h;
+          if (u >= 1) return 0;
+          const v = 1 - u * u * u;
+          return v * v * v;
+        });
+        const sw   = d3.sum(weights);
+        const swx  = d3.sum(data, (d, i) => weights[i] * d.year);
+        const swy  = d3.sum(data, (d, i) => weights[i] * d.doy);
+        const swxx = d3.sum(data, (d, i) => weights[i] * d.year * d.year);
+        const swxy = d3.sum(data, (d, i) => weights[i] * d.year * d.doy);
+        const det  = sw * swxx - swx * swx;
+        const b    = (sw * swxy - swx * swy) / det;
+        const a    = (swy - b * swx) / sw;
+        return { year: x0, doy: a + b * x0 };
+      });
+    }
+
+    const smooth = loess(data, 0.3);
+
+    const doyLabel = d => ({
+      70:"Mar 11", 75:"Mar 16", 80:"Mar 21",
+      85:"Mar 26", 90:"Mar 31", 95:"Apr 5",
+      100:"Apr 10", 105:"Apr 15", 110:"Apr 20"
+    }[d] || "");
+
+    const totalW = Math.min(window.innerWidth - 32, 500);
+    const totalH = totalW;
+    const margin = { top: 12, right: 18, bottom: 56, left: 54 };
+    const W = totalW - margin.left - margin.right;
+    const H = totalH - margin.top - margin.bottom;
+
+    const svg = d3.select("#chart")
+      .attr("width", totalW)
+      .attr("height", totalH)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    svg.append("rect")
+      .attr("width", W).attr("height", H)
+      .attr("fill", "#faf8f4").attr("rx", 2);
+
+    const xScale = d3.scaleLinear().domain([1921, 2022]).range([0, W]);
+    const yScale = d3.scaleLinear().domain([112, 70]).range([0, H]);
+
+    // Gridlines
+    svg.selectAll(".gx").data(d3.range(1930, 2030, 10)).enter().append("line")
+      .attr("x1", d => xScale(d)).attr("x2", d => xScale(d))
+      .attr("y1", 0).attr("y2", H)
+      .attr("stroke", "#ddd8cf").attr("stroke-width", 0.6);
+
+    svg.selectAll(".gy").data([70,75,80,85,90,95,100,105,110]).enter().append("line")
+      .attr("x1", 0).attr("x2", W)
+      .attr("y1", d => yScale(d)).attr("y2", d => yScale(d))
+      .attr("stroke", "#ddd8cf").attr("stroke-width", 0.6);
+
+    // 1970 reference line
+    svg.append("line")
+      .attr("x1", xScale(1970)).attr("x2", xScale(1970))
+      .attr("y1", 0).attr("y2", H)
+      .attr("stroke", "magenta")
+      .attr("stroke-width", 1.5)
+      .attr("stroke-dasharray", "6,4")
+      .attr("opacity", 0.8);
+
+    // SD band
+    const smoothMap = new Map(smooth.map(d => [d.year, d.doy]));
+    const residuals = data.map(d => d.doy - smoothMap.get(d.year));
+    const meanResid = d3.mean(residuals);
+    const sd = Math.sqrt(d3.mean(residuals.map(r => (r - meanResid) ** 2)));
+
+    const area = d3.area()
+      .x(d => xScale(d.year))
+      .y0(d => yScale(d.doy - sd))
+      .y1(d => yScale(d.doy + sd))
+      .curve(d3.curveCatmullRom.alpha(0.5));
+
+    svg.append("path")
+      .datum(smooth)
+      .attr("fill", "#b85c1e")
+      .attr("opacity", 0.15)
+      .attr("d", area);
+
+    // LOESS line
+    const line = d3.line()
+      .x(d => xScale(d.year))
+      .y(d => yScale(d.doy))
+      .curve(d3.curveCatmullRom.alpha(0.5));
+
+    svg.append("path")
+      .datum(smooth)
+      .attr("fill", "none")
+      .attr("stroke", "#b85c1e")
+      .attr("stroke-width", 2)
+      .attr("opacity", 0.9)
+      .attr("d", line);
+
+    // Data points
+    svg.selectAll(".dot").data(data).enter().append("circle")
+      .attr("cx", d => xScale(d.year))
+      .attr("cy", d => yScale(d.doy))
+      .attr("r", 6)
+      .attr("fill", "#f4a0b0")
+      .attr("opacity", 0.5)
+      .attr("stroke", "none");
+
+    // X Axis
+    svg.append("g")
+      .attr("transform", `translate(0,${H})`)
+      .call(d3.axisBottom(xScale)
+        .tickValues(d3.range(1930, 2030, 10))
+        .tickFormat(d3.format("d"))
+        .tickSize(4))
+      .call(g => g.select(".domain").attr("stroke","#8aada0"))
+      .call(g => g.selectAll(".tick line").attr("stroke","#8aada0"))
+      .call(g => g.selectAll("text")
+        .style("font-size","9px").style("fill","#3a3a3a")
+        .attr("transform","rotate(-38)").attr("dy","0.4em").attr("dx","-0.6em")
+        .style("text-anchor","end"));
+
+    // Y Axis
+    svg.append("g")
+      .call(d3.axisLeft(yScale)
+        .tickValues([70,75,80,85,90,95,100,105,110])
+        .tickFormat(doyLabel)
+        .tickSize(4))
+      .call(g => g.select(".domain").attr("stroke","#8aada0"))
+      .call(g => g.selectAll(".tick line").attr("stroke","#8aada0"))
+      .call(g => g.selectAll("text").style("font-size","9px").style("fill","#3a3a3a"));
+
+    // Axis labels
+    svg.append("text")
+      .attr("x", W / 2).attr("y", H + 48)
+      .attr("text-anchor","middle")
+      .style("font-size","10px").style("fill","#2d4a3e")
+      .text("Year");
+
+    svg.append("text")
+      .attr("transform","rotate(-90)")
+      .attr("x", -H / 2).attr("y", -42)
+      .attr("text-anchor","middle")
+      .style("font-size","10px").style("fill","#2d4a3e")
+      .text("Peak Bloom Date");
+  </script>
+</body>
+</html>
